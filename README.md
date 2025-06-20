@@ -16,6 +16,8 @@ This project focuses on building a **scalable end-to-end data pipeline** for ing
 
 ## 🧱 Architecture Overview
 
+![Mainstack Architecture](https://github.com/adetonayusuf/maystacksocialmedia/blob/main/MainstackArchitecture.drawio.png)
+
 ### 🔧 Technologies Used
 - **Azure Data Factory (ADF)** – Data ingestion (REST APIs → Data Lake)
 - **Azure Data Lake Storage (Gen2)** – Bronze, Silver, Gold storage zones
@@ -89,6 +91,8 @@ Page 1: Overview KPIs, monetization %, engagement trend
 ![Executive Summary](https://github.com/adetonayusuf/maystacksocialmedia/blob/main/Executive%20Summary.png)
 
 Page 2: Performance bands, creator segments, content heatmap
+
+![Performance](https://github.com/adetonayusuf/maystacksocialmedia/blob/main/Performance%20%26%20Audience.png)
 
 DAX measures: Engagement Rate, Monetized Content %, Performance Band
 
