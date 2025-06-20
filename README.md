@@ -48,6 +48,12 @@ Targeted endpoint: https://mainstack-media-api.amdari.io
 
 Stored results in: mainstack/bronze/[table_name] (as .parquet)
 
+![Database Connector](https://github.com/adetonayusuf/maystacksocialmedia/blob/main/Dataset%20Connection.png)
+
+![Dataset to data lake](https://github.com/adetonayusuf/maystacksocialmedia/blob/main/Dataset%20to%20Gen2%20set%20up.png)
+
+![IngestMainstackAPI](https://github.com/adetonayusuf/maystacksocialmedia/blob/main/IngestMainstackAPI%20Pipeline.png)
+
 📌 Step 2: Mount Data Lake in Databricks
 python
 Copy
@@ -57,6 +63,7 @@ dbutils.fs.mount(
   mount_point = "/mnt/bronze",
   extra_configs = {"fs.azure.sas.mainstack.mainstackstorage.blob.core.windows.net": "<sas_token>"}
 )
+
 📌 Step 3: Silver Layer Transformation
 Cleaned and deduplicated data using PySpark
 
@@ -81,6 +88,9 @@ df_fact_engagement.write.jdbc(
     mode="overwrite",
     properties=connection_properties
 )
+
+Databricks Notebook for step 1- 5 ![mainstack Notebook](https://github.com/adetonayusuf/maystacksocialmedia/blob/main/Mainstackdata.ipynb")
+
 📌 Step 6: Power BI Visualization
 Connected Power BI Desktop to Azure PostgreSQL
 
