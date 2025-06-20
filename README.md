@@ -39,46 +39,58 @@ This project focuses on building a **scalable end-to-end data pipeline** for ing
 
 ---
 
-## 🔄 End-to-End Steps
+📌 Step 1: API Ingestion via ADF
+Created 4 Copy Data activities (Demographics, Engagement, Content, Competitors)
 
-### 📌 Step 1: API Ingestion via ADF (Initially Attempted)
-- Created 4 **Copy Data** activities (Demographics, Engagement, Content, Competitors)
-- Targeted endpoint: `https://mainstack-media-api.amdari.io`
-- Stored results in: `mainstack/bronze/[table_name]` (as `.parquet`)
-- **Note**: Later replaced with Databricks job when the API returned 502 Bad Gateway
+Targeted endpoint: https://mainstack-media-api.amdari.io
 
-### 📌 Step 2: Created Ingestion Job in Databricks (Workaround)
-- Built a **custom ingestion job in Databricks** using Python `requests` and PySpark
-- Extracted data from each endpoint and saved it to `/mnt/bronze/`
-- Converted JSON responses to DataFrames
-- Mounted blob storage with SAS authentication
+Stored results in: mainstack/bronze/[table_name] (as .parquet)
 
-### 📌 Step 3: Silver Layer Transformation
-- Cleaned and deduplicated data using PySpark
-- Applied `cast`, `dropDuplicates`, `withColumnRenamed`
-- Saved outputs to `/mnt/silver/[table]`
+📌 Step 2: Mount Data Lake in Databricks
+python
+Copy
+Edit
+dbutils.fs.mount(
+  source = "wasbs://mainstack@mainstackstorage.blob.core.windows.net/bronze",
+  mount_point = "/mnt/bronze",
+  extra_configs = {"fs.azure.sas.mainstack.mainstackstorage.blob.core.windows.net": "<sas_token>"}
+)
+📌 Step 3: Silver Layer Transformation
+Cleaned and deduplicated data using PySpark
 
-### 📌 Step 4: Gold Modeling
-- Created **star schema**: `fact_engagement`, `fact_content`, `dim_creators`, `dim_time`, `dim_platforms`
-- Computed fields like `engagement_score`, `engagement_rate`, `monetization_category`
-- Stored to: `/mnt/gold`
+Applied cast, dropDuplicates, withColumnRenamed
 
-### 📌 Step 5: Export to PostgreSQL
-```python
+Saved outputs to /mnt/silver/[table]
+
+📌 Step 4: Gold Modeling
+Created star schema: fact_engagement, fact_content, dim_creators, dim_time, dim_platforms
+
+Computed fields like engagement_score, engagement_rate, monetization_category
+
+Stored to: /mnt/gold
+
+📌 Step 5: Export to PostgreSQL
+python
+Copy
+Edit
 df_fact_engagement.write.jdbc(
     url=jdbc_url,
     table="fact_engagement",
     mode="overwrite",
     properties=connection_properties
 )
-```
+📌 Step 6: Power BI Visualization
+Connected Power BI Desktop to Azure PostgreSQL
 
-### 📌 Step 6: Power BI Visualization
-- Connected Power BI Desktop to Azure PostgreSQL
-- Created 2-page executive dashboard:
-  - **Page 1**: Overview KPIs, monetization %, engagement trend
-  - **Page 2**: Performance bands, creator segments, content heatmap
-- DAX measures: `Engagement Rate`, `Monetized Content %`, `Performance Band`
+Created 2-page executive dashboard:
+
+Page 1: Overview KPIs, monetization %, engagement trend
+
+![Executive Summary](https://github.com/adetonayusuf/maystacksocialmedia/blob/main/Executive%20Summary.png)
+
+Page 2: Performance bands, creator segments, content heatmap
+
+DAX measures: Engagement Rate, Monetized Content %, Performance Band
 
 ---
 
